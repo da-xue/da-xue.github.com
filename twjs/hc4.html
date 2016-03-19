@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            background: #000;
+        }
+        canvas{
+            background: #fff;
+            padding: 50px;
+        }
+        span{
+            color: #fff;
+        }
+    </style>
+    <script>
+        function rnd(n,m){
+            return parseInt(Math.random()*(m-n)+n);
+        }
+        window.onload=function(){
+            var oC=document.getElementById('c1');
+
+            var gd=oC.getContext('2d');
+
+            var arr=[120,300,200,90,50,150,50];
+
+            var iMax=Math.max.apply(null,arr);
+
+            var aHeight=[];
+            for(var i=0; i<arr.length; i++){
+                aHeight[i]=arr[i]/iMax*oC.height;
+            }
+
+
+            var w=oC.width/(arr.length*3-2);
+            var space=w*2;
+
+            for(var i=0; i<aHeight.length; i++){
+                gd.fillStyle='rgb('+rnd(0,256)+','+rnd(0,256)+','+rnd(0,256)+')';
+                gd.strokeRect(i*w+i*space,oC.height-aHeight[i],w,aHeight[i]);
+                gd.fillRect(i*w+i*space,oC.height-aHeight[i],w,aHeight[i]);
+            }
+        };
+    </script>
+</head>
+<body>
+<canvas id="c1" width="700" height="500">
+</canvas>
+</body>
+</html>

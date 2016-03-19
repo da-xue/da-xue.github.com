@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        * { margin:0; padding:0; list-style:none; }
+        ul { width:510px; height:510px; margin:50px auto; border:1px solid red; }
+        li { position:relative; width:150px; height:150px; float:left; margin:10px; }
+        .active { border:5px dashed red; width:140px; height:140px; }
+        img { display:block; width:100%; }
+        span { position:absolute; top:0; left:0; width:100%; height:100%; font-size:50px; text-align:center; line-height:150px; background:rgba(255, 255, 255, 0.6); color:red; font-weight:bold; }
+        input{ width:90px; height:30px; position: absolute; top:50px; left:100px; }
+    </style>
+    <script>
+        //var cur=fx(t,b,c,d)
+        var Tween={Linear:function(t,b,c,d){return c*t/d+b},Quad:{easeIn:function(t,b,c,d){return c*(t/=d)*t+b},easeOut:function(t,b,c,d){return -c*(t/=d)*(t-2)+b},easeInOut:function(t,b,c,d){if((t/=d/2)<1){return c/2*t*t+b}return -c/2*((--t)*(t-2)-1)+b}},Cubic:{easeIn:function(t,b,c,d){return c*(t/=d)*t*t+b},easeOut:function(t,b,c,d){return c*((t=t/d-1)*t*t+1)+b},easeInOut:function(t,b,c,d){if((t/=d/2)<1){return c/2*t*t*t+b}return c/2*((t-=2)*t*t+2)+b}},Quart:{easeIn:function(t,b,c,d){return c*(t/=d)*t*t*t+b},easeOut:function(t,b,c,d){return -c*((t=t/d-1)*t*t*t-1)+b},easeInOut:function(t,b,c,d){if((t/=d/2)<1){return c/2*t*t*t*t+b}return -c/2*((t-=2)*t*t*t-2)+b}},Quint:{easeIn:function(t,b,c,d){return c*(t/=d)*t*t*t*t+b},easeOut:function(t,b,c,d){return c*((t=t/d-1)*t*t*t*t+1)+b},easeInOut:function(t,b,c,d){if((t/=d/2)<1){return c/2*t*t*t*t*t+b}return c/2*((t-=2)*t*t*t*t+2)+b}},Sine:{easeIn:function(t,b,c,d){return -c*Math.cos(t/d*(Math.PI/2))+c+b},easeOut:function(t,b,c,d){return c*Math.sin(t/d*(Math.PI/2))+b},easeInOut:function(t,b,c,d){return -c/2*(Math.cos(Math.PI*t/d)-1)+b}},Expo:{easeIn:function(t,b,c,d){return(t==0)?b:c*Math.pow(2,10*(t/d-1))+b},easeOut:function(t,b,c,d){return(t==d)?b+c:c*(-Math.pow(2,-10*t/d)+1)+b},easeInOut:function(t,b,c,d){if(t==0){return b}if(t==d){return b+c}if((t/=d/2)<1){return c/2*Math.pow(2,10*(t-1))+b}return c/2*(-Math.pow(2,-10*--t)+2)+b}},Circ:{easeIn:function(t,b,c,d){return -c*(Math.sqrt(1-(t/=d)*t)-1)+b},easeOut:function(t,b,c,d){return c*Math.sqrt(1-(t=t/d-1)*t)+b},easeInOut:function(t,b,c,d){if((t/=d/2)<1){return -c/2*(Math.sqrt(1-t*t)-1)+b}return c/2*(Math.sqrt(1-(t-=2)*t)+1)+b}},Elastic:{easeIn:function(t,b,c,d,a,p){if(t==0){return b}if((t/=d)==1){return b+c}if(!p){p=d*0.3}if(!a||a<Math.abs(c)){a=c;var s=p/4}else{var s=p/(2*Math.PI)*Math.asin(c/a)}return -(a*Math.pow(2,10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p))+b},easeOut:function(t,b,c,d,a,p){if(t==0){return b}if((t/=d)==1){return b+c}if(!p){p=d*0.3}if(!a||a<Math.abs(c)){a=c;var s=p/4}else{var s=p/(2*Math.PI)*Math.asin(c/a)}return(a*Math.pow(2,-10*t)*Math.sin((t*d-s)*(2*Math.PI)/p)+c+b)},easeInOut:function(t,b,c,d,a,p){if(t==0){return b}if((t/=d/2)==2){return b+c}if(!p){p=d*(0.3*1.5)}if(!a||a<Math.abs(c)){a=c;var s=p/4}else{var s=p/(2*Math.PI)*Math.asin(c/a)}if(t<1){return -0.5*(a*Math.pow(2,10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p))+b}return a*Math.pow(2,-10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p)*0.5+c+b}},Back:{easeIn:function(t,b,c,d,s){if(s==undefined){s=1.70158}return c*(t/=d)*t*((s+1)*t-s)+b},easeOut:function(t,b,c,d,s){if(s==undefined){s=1.70158}return c*((t=t/d-1)*t*((s+1)*t+s)+1)+b},easeInOut:function(t,b,c,d,s){if(s==undefined){s=1.70158}if((t/=d/2)<1){return c/2*(t*t*(((s*=(1.525))+1)*t-s))+b}return c/2*((t-=2)*t*(((s*=(1.525))+1)*t+s)+2)+b}},Bounce:{easeIn:function(t,b,c,d){return c-Tween.Bounce.easeOut(d-t,0,c,d)+b},easeOut:function(t,b,c,d){if((t/=d)<(1/2.75)){return c*(7.5625*t*t)+b}else{if(t<(2/2.75)){return c*(7.5625*(t-=(1.5/2.75))*t+0.75)+b}else{if(t<(2.5/2.75)){return c*(7.5625*(t-=(2.25/2.75))*t+0.9375)+b}else{return c*(7.5625*(t-=(2.625/2.75))*t+0.984375)+b}}}},easeInOut:function(t,b,c,d){if(t<d/2){return Tween.Bounce.easeIn(t*2,0,c,d)*0.5+b}else{return Tween.Bounce.easeOut(t*2-d,0,c,d)*0.5+c*0.5+b}}}};
+
+        function move(obj, json, options)
+        {
+            options=options || {};
+            var duration=options.duration || 300;
+            var easing=options.easing || Tween.Linear;
+
+            var start={};
+            var dis={};
+            var count=Math.floor(duration/30);
+            var n=0;
+
+            for (var name in json)
+            {
+                start[name]=parseFloat(getStyle(obj, name));
+                dis[name]=json[name]-start[name];
+            }
+
+            clearInterval(obj.timer);
+            obj.timer=setInterval(function (){
+                n++;
+
+                for (var name in json)
+                {
+                    var cur=easing(n/count*duration, start[name], dis[name], duration);
+
+                    if (name == 'opacity')
+                    {
+                        obj.style.opacity=cur;
+                    }
+                    else
+                    {
+                        obj.style[name]=cur+'px';
+                    }
+                }
+
+                if (n == count)
+                {
+                    clearInterval(obj.timer);
+                    options.complete && options.complete();
+                }
+            }, 30);
+        }
+
+        function getStyle(obj, sName)
+        {
+            return (obj.currentStyle || getComputedStyle(obj, false))[sName];
+        }
+
+        window.onload=function (){
+            var oBtn=document.getElementById('btn');
+            var aLi=document.getElementsByTagName('li');
+            var zIndex=1;
+
+            // 创建span 与效果无关
+            for (var i=0; i<aLi.length; i++)
+            {
+                var oSpan=document.createElement('span');
+                oSpan.innerHTML=i;
+                aLi[i].appendChild(oSpan);
+            }
+
+            // 布局转换
+            var aPos=[];
+            for (var i=0; i<aLi.length; i++)
+            {
+                aPos.push({
+                    left:aLi[i].offsetLeft,
+                    top:aLi[i].offsetTop
+                });
+            }
+
+            for (var i=0; i<aLi.length; i++)
+            {
+                setStyle(aLi[i], {
+                    left:aPos[i].left+'px',
+                    top:aPos[i].top+'px',
+                    position:'absolute',
+                    margin:0
+                });
+
+
+            }
+
+            // 拖拽
+            for (var i=0; i<aLi.length; i++)
+            {
+                drag(aLi[i]);
+            }
+
+            function drag(obj)
+            {
+                obj.onmousedown=function (ev){
+                    setStyle(obj, {zIndex:zIndex++});
+                    var oNear=null;
+
+                    var oEvent=ev || event;
+                    var disX=oEvent.clientX-obj.offsetLeft;
+                    var disY=oEvent.clientY-obj.offsetTop;
+
+                    document.onmousemove=function (ev){
+                        var oEvent=ev || event;
+                        var left=oEvent.clientX-disX;
+                        var top=oEvent.clientY-disY;
+
+                        setStyle(obj, {
+                            left:left+'px',
+                            top:top+'px'
+                        });
+
+                        // 找最近
+                        oNear=findNear(obj);
+
+                        if (oNear)
+                        {
+                            // 有
+                            for (var i=0; i<aLi.length; i++)
+                            {
+                                aLi[i].className='';
+                            }
+                            oNear.className='active';
+                        }
+                        else
+                        {
+                            // 没有
+                            for (var i=0; i<aLi.length; i++)
+                            {
+                                aLi[i].className='';
+                            }
+                        }
+                    };
+
+                    document.onmouseup=function (){
+                        document.onmousemove=null;
+                        document.onmouseup=null;
+
+                        if (oNear)
+                        { // ?
+                            move(obj, aPos[oNear.index]);
+                            move(oNear, aPos[obj.index]);
+
+                            var tmp=oNear.index;
+                            oNear.index=obj.index;
+                            obj.index=tmp;
+
+                            for (var i=0; i<aLi.length; i++)
+                            {
+                                aLi[i].className='';
+                            }
+                        }
+                        else
+                        {
+                            move(obj, aPos[obj.index]);
+                        }
+                    };
+
+                    return false;
+                };
+            }
+
+            function findNear(obj)
+            {
+                var nMin=999999;
+                var nMinIndex=-1;
+                for (var i=0; i<aLi.length; i++)
+                {
+                    if (aLi[i] != obj)
+                    {
+                        if (collTest(obj, aLi[i]))
+                        {
+                            var dis=getDis(obj, aLi[i]);
+                            if (dis < nMin)
+                            {
+                                nMin=dis;
+                                nMinIndex=i;
+                            }
+                        }
+                    }
+                }
+
+                if (nMinIndex != -1)
+                {
+                    return aLi[nMinIndex];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+            function getDis(obj1, obj2)
+            {
+                var a=obj1.offsetLeft+obj1.offsetWidth/2-(obj2.offsetLeft+obj2.offsetWidth/2);
+                var b=obj1.offsetTop+obj1.offsetHeight/2-(obj2.offsetTop+obj2.offsetHeight/2);
+
+                return Math.sqrt(a*a+b*b);
+            }
+
+            function setStyle(obj, json)
+            {
+                for (var name in json)
+                {
+                    obj.style[name]=json[name];
+                }
+            }
+
+            function collTest(obj1, obj2)
+            {
+                var l1=obj1.offsetLeft;
+                var r1=l1+obj1.offsetWidth;
+                var t1=obj1.offsetTop;
+                var b1=t1+obj1.offsetHeight;
+
+                var l2=obj2.offsetLeft;
+                var r2=l2+obj2.offsetWidth;
+                var t2=obj2.offsetTop;
+                var b2=t2+obj2.offsetHeight;
+
+                if (l2>r1 || l1>r2 || t1>b2 || t2>b1)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+
+
+            oBtn.onclick=function(){
+
+                function findInArr(n,arr){
+                    for(var i=0; i<arr.length; i++){
+                        if(n==arr[i]){
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+
+                var arr=[]
+                while(arr.length<9){
+                    var n=Math.floor(Math.random()*(9-0)+0);
+                    if(! findInArr(n,arr)){
+                        arr.push(n);
+                    }
+
+
+                }
+
+                for(var i=0; i<aLi.length; i++)
+                {
+                    move(aLi[i],{left:aPos[arr[i]].left,top:aPos[arr[i]].top})
+                }
+
+            };
+
+        };
+    </script>
+</head>
+
+<body>
+<input type="button" value="go" id="btn"/>
+<ul>
+    <li>
+        <img src="../images/1.jpg" />
+    </li>
+    <li>
+        <img src="../images/2.jpg" />
+    </li>
+    <li>
+        <img src="../images/3.jpg" />
+    </li>
+
+    <li>
+        <img src="../images/4.jpg" />
+    </li>
+    <li>
+        <img src="../images/5.jpg" />
+    </li>
+    <li>
+        <img src="../images/6.jpg" />
+    </li>
+
+    <li>
+        <img src="../images/7.jpg" />
+    </li>
+    <li>
+        <img src="../images/8.jpg" />
+    </li>
+    <li>
+        <img src="../images/9.jpg" />
+    </li>
+</ul>
+</body>
+</html>
