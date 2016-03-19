@@ -300,7 +300,7 @@
     left:50%;
     top:90px;
     margin-left:-60px;
-
+    cursor: pointer;
 }
 .left,.right{
 
